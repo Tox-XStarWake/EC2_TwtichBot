@@ -4,7 +4,8 @@ from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
 # Initialize OpenAI with your API key
 openai_client = OpenAI(
-    api_key=OPENAI_API_KEY
+    api_key=OPENAI_API_KEY,
+    headers={"OpenAI-Organization": "XStarWake"}
 )
 
 class Bot(commands.Bot):
@@ -23,7 +24,7 @@ class Bot(commands.Bot):
         if message.content.startswith('!hello'):
             try:
                 chat_completion = openai_client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4-turbo-preview",
                     messages=[
                         {"role": "system", "content": "You are a helpful assistant."},
                         {"role": "user", "content": message.content[len('!hello'):].strip()}
