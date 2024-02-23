@@ -32,10 +32,10 @@ class Bot(commands.Bot):
 
                 messages = [
                     {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": message.content}
+                    {"role": "user", "content": prompt}
                 ],
                 model="gpt-3.5-turbo",  # Use the openai module directly
-                prompt=prompt,
+                #prompt=prompt,
                 max_tokens=60,  # Adjust based on your needs
                 temperature=0.7  # Adjust for creativity of the response
             )
