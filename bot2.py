@@ -24,7 +24,7 @@ class Bot(commands.Bot):
         if message.content.startswith('!hello'):
             try:
                 chat_completion = openai_client.chat.completions.create(
-                    model="text-davinci-003",
+                    model="gpt-3.5-turbo",
                     messages=[
                         {"role": "system", "content": "You are a helpful assistant."},
                         {"role": "user", "content": message.content[len('!hello'):].strip()}
