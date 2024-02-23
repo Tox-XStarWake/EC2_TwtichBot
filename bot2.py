@@ -8,6 +8,9 @@ openai_client = OpenAI(
     # headers={"OpenAI-Organization": "XStarWake"}
 )
 
+response = openai.Engine.list()
+print(response)
+
 class Bot(commands.Bot):
 
     def __init__(self):
