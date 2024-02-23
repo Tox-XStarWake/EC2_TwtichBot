@@ -3,7 +3,11 @@ from twitchio.ext import commands
 from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
 # Set your OpenAI API key directly on the openai module
-openai.api_key = OPENAI_API_KEY
+# Initialize OpenAI with your API key
+openai_client = OpenAI(
+    api_key=OPENAI_API_KEY,
+    # headers={"OpenAI-Organization": "XStarWake"}
+)
 
 class Bot(commands.Bot):
 
@@ -24,7 +28,7 @@ class Bot(commands.Bot):
             # Adjust the prompt to fit your needs. You might want to include more context or use a different approach to generate the prompt.
             prompt = f"A viewer says: '{message.content}'. How should a helpful assistant respond?"
 
-            chat_completion = openai.Completion.create(
+            chat_completion = openai_client.Completion.create(
                 model="gpt-3.5-turbo",  # Use the openai module directly
                 prompt=prompt,
                 max_tokens=60,  # Adjust based on your needs
