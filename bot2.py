@@ -33,7 +33,8 @@ class Bot(commands.Bot):
                 
                 if chat_completion.choices:
                     first_choice = chat_completion.choices[0]
-                    reply = first_choice.message['content']  # Ensure correct access to content
+                    reply = first_choice.message.content
+                    # reply = first_choice.message['content']  # Ensure correct access to content
                     await message.channel.send(reply)
                 else:
                     await message.channel.send("I'm not sure what to say.")
