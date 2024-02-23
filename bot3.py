@@ -1,10 +1,10 @@
-import openai  # Correctly import the openai module
+from openai import OpenAI
 from twitchio.ext import commands
 from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
 # Set your OpenAI API key directly on the openai module
 # Initialize OpenAI with your API key
-openai_client = openai(
+openai_client = OpenAI(
     api_key=OPENAI_API_KEY,
     # headers={"OpenAI-Organization": "XStarWake"}
 )
