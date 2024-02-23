@@ -1,13 +1,14 @@
 import openai
 from twitchio.ext import commands
+from config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
 # Initialize OpenAI with your API key
-openai.api_key = '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'
+openai.api_key = OPENAI_API_KEY
 
 class Bot(commands.Bot):
 
     def __init__(self):
-        super().__init__(token='anvi7yb4sn4zwazkz4g9lk9z3pyiwo', prefix='!', initial_channels=['xstarwake'])
+        super().__init__(token=TWITCH_TOKEN, prefix='!', initial_channels=[TWITCH_CHANNEL])
 
     async def event_ready(self):
         print(f'Logged in as {self.nick}')
@@ -16,14 +17,16 @@ class Bot(commands.Bot):
         if message.echo:
             return
         
-        # Simple command to respond with a ChatGPT-generated message
+        # Example command using the OpenAI key
         if message.content.startswith('!hello'):
-            response = openai.Completion.create(
-                engine="text-davinci-003",
-                prompt="Say a friendly hello to a Twitch viewer.",
-                max_tokens=60
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo", 
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": "Say a friendly hello to a Twitch viewer."}
+                ]
             )
-            await message.channel.send(response.choices[0].text.strip())
+            await message.channel.send(response.choices[0].message['content'])
 
 if __name__ == '__main__':
     bot = Bot()
