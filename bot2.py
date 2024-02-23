@@ -3,7 +3,7 @@ from twitchio.ext import commands
 from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
 # Initialize OpenAI with your API key
-client = OpenAI(
+openai_client = OpenAI(
     api_key=OPENAI_API_KEY
 )
 
