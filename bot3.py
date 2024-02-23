@@ -41,7 +41,8 @@ class Bot(commands.Bot):
             )
 
             if chat_completion.choices:
-                reply = chat_completion.choices[0].message['content']
+                first_choice = chat_completion.choices[0]
+                reply = first_choice.message.content
                 await message.channel.send(reply)
             else:
                 await message.channel.send("I'm not sure what to say.")
