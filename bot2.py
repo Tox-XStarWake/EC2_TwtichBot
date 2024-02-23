@@ -24,24 +24,22 @@ class Bot(commands.Bot):
         if message.content.startswith('!hello'):
             try:
                 chat_completion = openai_client.chat.completions.create(
-                    model="gpt-4-turbo-preview",
+                    model="text-davinci-003",
                     messages=[
                         {"role": "system", "content": "You are a helpful assistant."},
                         {"role": "user", "content": message.content[len('!hello'):].strip()}
                     ],
                 )
                 
-                # Correctly accessing the generated text from the response
-            if chat_completion.choices:
-                first_choice = chat_completion.choices[0]
-                reply = first_choice.message.content  # Corrected line
-                await message.channel.send(reply)
-            else:
-                await message.channel.send("I'm not sure what to say.")
-        except Exception as e:
-            print(f"An error occurred while generating a response: {e}")
-            await message.channel.send("Sorry, I couldn't generate a response.")
-
+                if chat_completion.choices:
+                    first_choice = chat_completion.choices[0]
+                    reply = first_choice.message['content']  # Ensure correct access to content
+                    await message.channel.send(reply)
+                else:
+                    await message.channel.send("I'm not sure what to say.")
+            except Exception as e:
+                print(f"An error occurred while generating a response: {e}")
+                await message.channel.send("Sorry, I couldn't generate a response.")
 
 if __name__ == '__main__':
     bot = Bot()
