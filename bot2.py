@@ -5,7 +5,7 @@ from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 # Initialize OpenAI with your API key
 openai_client = OpenAI(
     api_key=OPENAI_API_KEY,
-    headers={"OpenAI-Organization": "XStarWake"}
+    # headers={"OpenAI-Organization": "XStarWake"}
 )
 
 class Bot(commands.Bot):
