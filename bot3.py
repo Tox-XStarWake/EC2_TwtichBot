@@ -4,7 +4,7 @@ from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
 # Set your OpenAI API key directly on the openai module
 # Initialize OpenAI with your API key
-openai_client = OpenAI(
+openai_client = openai(
     api_key=OPENAI_API_KEY,
     # headers={"OpenAI-Organization": "XStarWake"}
 )
