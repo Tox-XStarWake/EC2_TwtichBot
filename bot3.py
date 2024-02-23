@@ -29,6 +29,11 @@ class Bot(commands.Bot):
             prompt = f"A viewer says: '{message.content}'. How should a helpful assistant respond?"
 
             chat_completion = openai_client.chat.completions.create(
+
+                messages = [
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": message.content}
+                ]
                 model="gpt-3.5-turbo",  # Use the openai module directly
                 prompt=prompt,
                 max_tokens=60,  # Adjust based on your needs
@@ -36,7 +41,7 @@ class Bot(commands.Bot):
             )
 
             if chat_completion.choices:
-                reply = chat_completion.choices[0].text.strip()
+                reply = chat_completion.choices[0].message['content']
                 await message.channel.send(reply)
             else:
                 await message.channel.send("I'm not sure what to say.")
