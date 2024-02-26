@@ -20,6 +20,12 @@ class Bot(commands.Bot):
         "Your parents are Twitch Streamers Max and Mel who stream on the channel XStarWake."
     )
 
+    DOCTOR_PERSONALITY = (
+        "You are a 20+ year experienced psychiatrist. "
+        "You also have 20+ years experience being a Psychologist. "
+        "Because of your past experience you also are a great Therapist."
+    )
+
     def __init__(self):
         super().__init__(
             token=TWITCH_TOKEN, prefix="!", initial_channels=[TWITCH_CHANNEL]
@@ -29,10 +35,32 @@ class Bot(commands.Bot):
     def get_sentiment_prompt(self, message):
         return f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'"
 
-    async def analyze_sentiment(message):
-        # This is a placeholder function. You'll need to replace it with actual API calls
-        response = sentiment_analysis_client.analyze_text(message)
-        return response.sentiment  # Assuming the response has a 'sentiment' attribute
+    async def analyze_sentiment(self, message):
+        if message.echo or message.id in self.responded_messages:
+            return
+
+        sentiment_prompt = f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'"
+
+        try:
+            response = openai_client.chat.completions.create(
+                model="gpt-3.5-turbo",  # Use the openai module directly
+                messages=[
+                    {
+                        "role": "system",
+                        "content": self.DOCTOR_PERSONALITY,
+                    },
+                    {"role": "user", "content": sentiment_prompt},
+                ],
+                max_tokens=60,  # Adjust based on your needs
+                temperature=0.35,  # Adjust for creativity of the response
+            )
+
+            sentiment = response.choices[0].text.strip()
+            return sentiment
+
+        except Exception as e:
+            print(f"An error occurred while analyzing sentiment: {e}")
+            return "Unknown"  # Fallback sentiment in case of an error
 
     async def event_ready(self):
         print(f"Logged in as {self.nick}")
