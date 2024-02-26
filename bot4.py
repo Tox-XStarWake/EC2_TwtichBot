@@ -53,7 +53,7 @@ class Bot(commands.Bot):
                 temperature=0.35,  # Adjust for creativity of the response
             )
 
-            sentiment = response.choices[0].message.content
+            sentiment = response.choices[0].message.content.lower()
             return sentiment
 
         except Exception as e:
@@ -127,7 +127,7 @@ class Bot(commands.Bot):
 
         print(f"How was that message: {sentiment}")
 
-        if "Negative" in sentiment or "Sad" in sentiment:
+        if "negative" in sentiment or "sad" in sentiment:
             try:
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
                 prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
