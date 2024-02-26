@@ -53,7 +53,7 @@ class Bot(commands.Bot):
                 temperature=0.35,  # Adjust for creativity of the response
             )
 
-            sentiment = response.choices[0].message["content"]
+            sentiment = response.choices[0].message.content
             return sentiment
 
         except Exception as e:
