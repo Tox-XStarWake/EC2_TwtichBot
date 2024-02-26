@@ -45,7 +45,7 @@ class Bot(commands.Bot):
         message_content_lower = message.content.lower()
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
         message_sentiment = self.get_sentiment_prompt(message.content)
-        context = None  # Initialize context and link with None
+        context = None 
         link = None
 
         if "what" in message_content_lower or "have" in message_content_lower:
@@ -97,105 +97,39 @@ class Bot(commands.Bot):
                     f"Hey, @{message.author.name}, you should check out {link} !"
                 )
 
-        # if (
-        #     "what" in message_content_lower or "have" in message_content_lower
-        # ) and "discord" in message_content_lower:
-        #     try:
-        #         # Craft a prompt that instructs the AI to include the sender's name and the Discord link
-        #         prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include an invitation to join our Discord community at http://discord.gg/xstarwake ."
+        print(f"How was that message: {message_sentiment}")
 
-        #         chat_completion = openai_client.chat.completions.create(
-        #             model="gpt-3.5-turbo",  # Use the openai module directly
-        #             messages=[
-        #                 {
-        #                     "role": "system",
-        #                     "system", "content": self.BORIS_PERSONALITY,
-        #                 },
-        #                 {"role": "user", "content": prompt},
-        #             ],
-        #             max_tokens=150,  # Adjust based on your needs
-        #             temperature=0.7,  # Adjust for creativity of the response
-        #         )
+        if "Negative" in message_sentiment or "Sad" in message_sentiment:
+            try:
+                # Craft a prompt that instructs the AI to include the sender's name and the Discord link
+                prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
 
-        #         if chat_completion.choices:
-        #             first_choice = chat_completion.choices[0]
-        #             reply = first_choice.message.content
-        #             await message.channel.send(reply)
-        #         else:
-        #             await message.channel.send(
-        #                 f"Hey, @{message.author.name}, don't forget to join our Discord at http://discord.gg/xstarwake !"
-        #             )
-        #     except Exception as e:
-        #         print(f"An error occurred while generating a response: {e}")
-        #         await message.channel.send(
-        #             f"Hey! @{message.author.name}, feel free to join our Discord at http://discord.gg/xstarwake !"
-        #         )
+                chat_completion = openai_client.chat.completions.create(
+                    model="gpt-3.5-turbo",  # Use the openai module directly
+                    messages=[
+                        {
+                            "role": "system",
+                            "system", "content": self.BORIS_PERSONALITY,
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    max_tokens=150,  # Adjust based on your needs
+                    temperature=0.7,  # Adjust for creativity of the response
+                )
 
-        # if (
-        #     "what" in message_content_lower or "have" in message_content_lower
-        # ) and "merch" in message_content_lower:
-        #     try:
-        #         # Craft a prompt that instructs the AI to include the sender's name and the Discord link
-        #         prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include an invitation to check out our merch store at http://merch.xstarwake.com"
-
-        #         chat_completion = openai_client.chat.completions.create(
-        #             model="gpt-3.5-turbo",  # Use the openai module directly
-        #             messages=[
-        #                 {
-        #                     "role": "system",
-        #                     "system", "content": self.BORIS_PERSONALITY,
-        #                 },
-        #                 {"role": "user", "content": prompt},
-        #             ],
-        #             max_tokens=150,  # Adjust based on your needs
-        #             temperature=0.7,  # Adjust for creativity of the response
-        #         )
-
-        #         if chat_completion.choices:
-        #             first_choice = chat_completion.choices[0]
-        #             reply = first_choice.message.content
-        #             await message.channel.send(reply)
-        #         else:
-        #             await message.channel.send(
-        #                 f"Hey, @{message.author.name}, our merch is at http://merch.xstarwake.com ."
-        #             )
-        #     except Exception as e:
-        #         print(f"An error occurred while generating a response: {e}")
-        #         await message.channel.send(
-        #             f"Hey! @{message.author.name}, feel free to check out our merch at http://merch.xstarwake.com ."
-        #         )
-
-        # if "Negative" in message_sentiment or "Sad" in message_sentiment:
-        #     try:
-        #         # Craft a prompt that instructs the AI to include the sender's name and the Discord link
-        #         prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
-
-        #         chat_completion = openai_client.chat.completions.create(
-        #             model="gpt-3.5-turbo",  # Use the openai module directly
-        #             messages=[
-        #                 {
-        #                     "role": "system",
-        #                     "system", "content": self.BORIS_PERSONALITY,
-        #                 },
-        #                 {"role": "user", "content": prompt},
-        #             ],
-        #             max_tokens=150,  # Adjust based on your needs
-        #             temperature=0.7,  # Adjust for creativity of the response
-        #         )
-
-        #         if chat_completion.choices:
-        #             first_choice = chat_completion.choices[0]
-        #             reply = first_choice.message.content
-        #             await message.channel.send(reply)
-        #         else:
-        #             await message.channel.send(
-        #                 f"Hey, @{message.author.name}, sorry your having such a RUFF go of it."
-        #             )
-        #     except Exception as e:
-        #         print(f"An error occurred while generating a response: {e}")
-        #         await message.channel.send(
-        #             f"Hey! @{message.author.name}, Keep your chin up."
-        #         )
+                if chat_completion.choices:
+                    first_choice = chat_completion.choices[0]
+                    reply = first_choice.message.content
+                    await message.channel.send(reply)
+                else:
+                    await message.channel.send(
+                        f"Hey, @{message.author.name}, sorry your having such a RUFF go of it."
+                    )
+            except Exception as e:
+                print(f"An error occurred while generating a response: {e}")
+                await message.channel.send(
+                    f"Hey! @{message.author.name}, Keep your chin up."
+                )
 
         # Process every message to generate a response
         # Be mindful of rate limits and costs associated with OpenAI API usage
