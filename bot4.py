@@ -46,11 +46,11 @@ class Bot(commands.Bot):
         if "what" in message_content_lower or "have" in message_content_lower:
 
             # Determine the context and craft the AI prompt
-            if "discord" in message_content_lower and RESPONDABLE is False:
+            if "discord" in message_content_lower: #and RESPONDABLE is False:
                 context = "an invitation to join our Discord community"
                 link = "http://discord.gg/xstarwake"
                 #RESPONDABLE = True
-            elif "merch" in message_content_lower and RESPONDABLE is False::
+            elif "merch" in message_content_lower: #and RESPONDABLE is False:
                 context = "an invitation to check out our merch store"
                 link = "http://merch.xstarwake.com"
                 #RESPONDABLE = True
