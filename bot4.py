@@ -45,7 +45,7 @@ class Bot(commands.Bot):
         message_content_lower = message.content.lower()
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
         message_sentiment = self.get_sentiment_prompt(message.content)
-        context = None 
+        context = None
         link = None
 
         if "what" in message_content_lower or "have" in message_content_lower:
@@ -109,7 +109,7 @@ class Bot(commands.Bot):
                     messages=[
                         {
                             "role": "system",
-                            "system", "content": self.BORIS_PERSONALITY,
+                            "content": self.BORIS_PERSONALITY,
                         },
                         {"role": "user", "content": prompt},
                     ],
