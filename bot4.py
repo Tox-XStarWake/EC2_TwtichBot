@@ -37,7 +37,7 @@ class Bot(commands.Bot):
 
     async def analyze_sentiment(self, message):
 
-        sentiment_prompt = f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'"
+        sentiment_prompt = f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'. The only catch is I want a single word response of a category and if you can't classify it reply with Unknown."
 
         try:
             response = openai_client.chat.completions.create(
@@ -158,37 +158,6 @@ class Bot(commands.Bot):
                 await message.channel.send(
                     f"Hey! @{message.author.name}, Keep your chin up."
                 )
-
-        # Process every message to generate a response
-        # Be mindful of rate limits and costs associated with OpenAI API usage
-        # try:
-        #     # Adjust the prompt to fit your needs. You might want to include more context or use a different approach to generate the prompt.
-        #     prompt = f"A viewer says: '{message.content}'."  # How should a helpful assistant respond?"
-
-        #     chat_completion = openai_client.chat.completions.create(
-        #         messages=[
-        #             {
-        #                 "role": "system",
-        #                 "content": "You are a 9 year old pug with birthday coming up this summer. You have a brother named kobe who is a french bulldog. Your parents are Twitch Streamers Max and Mel who stream on the channel XStarWake.",
-        #             },
-        #             {"role": "user", "content": prompt},
-        #         ],
-        #         model="gpt-3.5-turbo",  # Use the openai module directly
-        #         max_tokens=160,  # Adjust based on your needs
-        #         temperature=0.7,  # Adjust for creativity of the response
-        #     )
-
-        #     if chat_completion.choices:
-        #         first_choice = chat_completion.choices[0]
-        #         reply = first_choice.message.content
-        #         await message.channel.send(reply)
-        #     else:
-        #         await message.channel.send("Uhhh... Woof Woof?")
-        # except Exception as e:
-        #     print(f"An error occurred while generating a response: {e}")
-        #     await message.channel.send(
-        #         "Someone yell at @Toxic__Salt I'm not feeling well."
-        #     )
 
 
 if __name__ == "__main__":
