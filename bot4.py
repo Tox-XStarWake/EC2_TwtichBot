@@ -53,7 +53,7 @@ class Bot(commands.Bot):
                 temperature=0.35,  # Adjust for creativity of the response
             )
 
-            sentiment = response.choices[0].text.strip()
+            sentiment = response.choices[0]
             return sentiment
 
         except Exception as e:
@@ -132,7 +132,7 @@ class Bot(commands.Bot):
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
                 prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
 
-                chat_completion = openai_client.chat.completions.create(
+                sentiment_completion = openai_client.chat.completions.create(
                     model="gpt-3.5-turbo",  # Use the openai module directly
                     messages=[
                         {
@@ -145,8 +145,8 @@ class Bot(commands.Bot):
                     temperature=0.7,  # Adjust for creativity of the response
                 )
 
-                if chat_completion.choices:
-                    first_choice = chat_completion.choices[0]
+                if sentiment_completion.choices:
+                    first_choice = sentiment_completion.choices[0]
                     reply = first_choice.message.content
                     await message.channel.send(reply)
                 else:
