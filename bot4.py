@@ -32,12 +32,10 @@ class Bot(commands.Bot):
         )
         self.responded_messages = set()  # Set to track messages Boris has responded to
 
-    def get_sentiment_prompt(self, message):
-        return f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'"
+    # def get_sentiment_prompt(self, message):
+    #     return f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'"
 
     async def analyze_sentiment(self, message):
-        if message.echo or message.id in self.responded_messages:
-            return
 
         sentiment_prompt = f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'"
 
@@ -72,7 +70,6 @@ class Bot(commands.Bot):
 
         message_content_lower = message.content.lower()
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
-        message_sentiment = self.get_sentiment_prompt(message.content)
         context = None
         link = None
 
@@ -125,9 +122,12 @@ class Bot(commands.Bot):
                     f"Hey, @{message.author.name}, you should check out {link} !"
                 )
 
-        print(f"How was that message: {message_sentiment}")
+        # Directly perform sentiment analysis
+        sentiment = await self.analyze_sentiment(message.content)
 
-        if "Negative" in message_sentiment or "Sad" in message_sentiment:
+        print(f"How was that message: {sentiment}")
+
+        if "Negative" in sentiment or "Sad" in sentiment:
             try:
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
                 prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
