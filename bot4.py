@@ -9,13 +9,16 @@ openai_client = OpenAI(
     # headers={"OpenAI-Organization": "XStarWake"}
 )
 
-#RESPONDABLE = False
+# RESPONDABLE = False
+
 
 class Bot(commands.Bot):
 
-    BORIS_PERSONALITY = ("You are a 9 year old pug with birthday coming up this summer. "
-                         "You have a brother named Kobe who is a french bulldog. "
-                         "Your parents are Twitch Streamers Max and Mel who stream on the channel XStarWake.")
+    BORIS_PERSONALITY = (
+        "You are a 9 year old pug with birthday coming up this summer. "
+        "You have a brother named Kobe who is a french bulldog. "
+        "Your parents are Twitch Streamers Max and Mel who stream on the channel XStarWake."
+    )
 
     def __init__(self):
         super().__init__(
@@ -38,7 +41,7 @@ class Bot(commands.Bot):
         # Prevent the bot from responding to its own messages or to messages it has already responded to
         if message.echo or message.id in self.responded_messages:
             return
-        
+
         message_content_lower = message.content.lower()
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
         message_sentiment = get_sentiment_prompt(message.content)
@@ -46,21 +49,21 @@ class Bot(commands.Bot):
         if "what" in message_content_lower or "have" in message_content_lower:
 
             # Determine the context and craft the AI prompt
-            if "discord" in message_content_lower: #and RESPONDABLE is False:
+            if "discord" in message_content_lower:  # and RESPONDABLE is False:
                 context = "an invitation to join our Discord community"
                 link = "http://discord.gg/xstarwake"
-                #RESPONDABLE = True
-            elif "merch" in message_content_lower: #and RESPONDABLE is False:
+                # RESPONDABLE = True
+            elif "merch" in message_content_lower:  # and RESPONDABLE is False:
                 context = "an invitation to check out our merch store"
                 link = "http://merch.xstarwake.com"
-                #RESPONDABLE = True
+                # RESPONDABLE = True
             else:
                 # If the message doesn't match any specific context, skip processing
                 return
 
         prompt = f"Respond to {user_prompt} and include {context} at {link}."
 
-        #if  RESPONDABLE is True:
+        # if  RESPONDABLE is True:
         try:
             # Craft a prompt that instructs the AI to include the sender's name and the Discord link
             prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include an invitation to join our Discord community at http://discord.gg/xstarwake ."
@@ -70,7 +73,7 @@ class Bot(commands.Bot):
                 messages=[
                     {
                         "role": "system",
-                        "system", "content": self.BORIS_PERSONALITY,
+                        "content": self.BORIS_PERSONALITY,
                     },
                     {"role": "user", "content": prompt},
                 ],
@@ -91,15 +94,6 @@ class Bot(commands.Bot):
             await message.channel.send(
                 f"Hey, @{message.author.name}, you should check out {link} !"
             )
-
-
-
-
-
-
-
-
-
 
         # if (
         #     "what" in message_content_lower or "have" in message_content_lower
@@ -200,7 +194,6 @@ class Bot(commands.Bot):
         #         await message.channel.send(
         #             f"Hey! @{message.author.name}, Keep your chin up."
         #         )
-
 
         # Process every message to generate a response
         # Be mindful of rate limits and costs associated with OpenAI API usage
