@@ -26,7 +26,7 @@ class Bot(commands.Bot):
         )
         self.responded_messages = set()  # Set to track messages Boris has responded to
 
-    def get_sentiment_prompt(message):
+    def get_sentiment_prompt(self, message):
         return f"Analyze the sentiment of this message and categorize it as Positive, Happy, Negative, Sad, Unknown, or Neutral: '{message}'"
 
     async def analyze_sentiment(message):
@@ -44,7 +44,7 @@ class Bot(commands.Bot):
 
         message_content_lower = message.content.lower()
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
-        message_sentiment = get_sentiment_prompt(message.content)
+        message_sentiment = self.get_sentiment_prompt(message.content)(message.content)
 
         if "what" in message_content_lower or "have" in message_content_lower:
 
