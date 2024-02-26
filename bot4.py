@@ -32,7 +32,7 @@ class Bot(commands.Bot):
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
                 prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include an invitation to join our Discord community at http://discord.gg/xstarwake."
 
-                chat_completion = openai.ChatCompletion.create(
+                chat_completion = OpenAI.ChatCompletion.create(
                     model="gpt-3.5-turbo",  # Use the openai module directly
                     messages=[
                         {
