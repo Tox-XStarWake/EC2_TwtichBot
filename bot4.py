@@ -44,7 +44,7 @@ class Bot(commands.Bot):
 
         message_content_lower = message.content.lower()
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
-        message_sentiment = self.get_sentiment_prompt(message.content)(message.content)
+        message_sentiment = self.get_sentiment_prompt(message.content)
 
         if "what" in message_content_lower or "have" in message_content_lower:
 
