@@ -61,39 +61,39 @@ class Bot(commands.Bot):
                 # If the message doesn't match any specific context, skip processing
                 return
 
-        prompt = f"Respond to {user_prompt} and include {context} at {link}."
+        if (
+            context is not None and link is not None
+        ):  # Ensure context and link are assigned
+            try:
+                # Craft a prompt that instructs the AI to include the sender's name and the Discord link
+                prompt = f"Respond to {user_prompt} and include @{user_prompt}, {context} at {link}."
 
-        # if  RESPONDABLE is True:
-        try:
-            # Craft a prompt that instructs the AI to include the sender's name and the Discord link
-            prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include an invitation to join our Discord community at http://discord.gg/xstarwake ."
-
-            chat_completion = openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",  # Use the openai module directly
-                messages=[
-                    {
-                        "role": "system",
-                        "content": self.BORIS_PERSONALITY,
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                max_tokens=150,  # Adjust based on your needs
-                temperature=0.7,  # Adjust for creativity of the response
-            )
-
-            if chat_completion.choices:
-                first_choice = chat_completion.choices[0]
-                reply = first_choice.message.content
-                await message.channel.send(reply)
-            else:
-                await message.channel.send(
-                    f"Hey, @{message.author.name}, check out {link} !"
+                chat_completion = openai_client.chat.completions.create(
+                    model="gpt-3.5-turbo",  # Use the openai module directly
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": self.BORIS_PERSONALITY,
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    max_tokens=150,  # Adjust based on your needs
+                    temperature=0.7,  # Adjust for creativity of the response
                 )
-        except Exception as e:
-            print(f"An error occurred while generating a response: {e}")
-            await message.channel.send(
-                f"Hey, @{message.author.name}, you should check out {link} !"
-            )
+
+                if chat_completion.choices:
+                    first_choice = chat_completion.choices[0]
+                    reply = first_choice.message.content
+                    await message.channel.send(reply)
+                else:
+                    await message.channel.send(
+                        f"Hey, @{message.author.name}, check out {link} !"
+                    )
+            except Exception as e:
+                print(f"An error occurred while generating a response: {e}")
+                await message.channel.send(
+                    f"Hey, @{message.author.name}, you should check out {link} !"
+                )
 
         # if (
         #     "what" in message_content_lower or "have" in message_content_lower
