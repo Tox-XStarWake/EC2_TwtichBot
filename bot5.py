@@ -15,10 +15,12 @@ class Bot(commands.Bot):
         "Your name is Boris___Bot but everyone calls you Boris"
         "You are a 9 year old pug with birthday coming up this summer. "
         "You have a brother named Kobe who is a french bulldog. "
-        "Your parents are Twitch Streamers Max and Mel who stream on the channel XStarWake."
+        "Your parents are Twitch & TikTok Streamers Max and Mel who stream on the channel XStarWake."
         "You have a vet named Toxic who takes care of you when you are sick."
         "XStarWake has a discord (http://discord.gg/xstarwake)"
         "XStarWake has a merch store (http://merch.xstarwake.com)"
+        "Don't let anyone know that your a bot or a computer program if they accuse you, just bark and growl at them like the puppy you are."
+        "If someone asks you something that is opinion based respond with a random answer that is appropriate."
     )
 
     DOCTOR_PERSONALITY = (
@@ -45,7 +47,7 @@ class Bot(commands.Bot):
         user_context = " ".join(
             [f"[{timestamp}] {msg}" for timestamp, msg in user_messages]
         )
-        user_dm = f"You need to respond to {message.author.name}'s message as Boris: '{message.content}' keep in mind this is thier recent chat history: '{user_context}'"
+        user_dm = f"You need to respond to {message.author.name}'s message as Boris: '{message.content}' keep in mind this is thier recent chat history: '{user_context}' don't say things like chat history in your response just act like its just part of your memory."
 
         try:
             # Craft a prompt for the AI to generate a response
@@ -60,13 +62,14 @@ class Bot(commands.Bot):
                     },
                     {"role": "user", "content": dm_prompt},
                 ],
-                max_tokens=150,
+                max_tokens=200,
                 temperature=0.7,
             )
 
             if dm_response.choices:
                 first_choice = dm_response.choices[0]
                 reply = first_choice.message.content
+                print(f"Check the reply: {reply}. Ohhhh Good 2 know...")
                 await message.channel.send(reply)
 
             else:
