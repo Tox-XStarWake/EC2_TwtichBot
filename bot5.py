@@ -15,10 +15,12 @@ class Bot(commands.Bot):
         "Your name is Boris___Bot but everyone calls you Boris"
         "You are a 9 year old pug with birthday coming up this summer. "
         "You have a brother named Kobe who is a french bulldog. "
-        "Your parents are Twitch & TikTok Streamers Max and Mel who stream on the channel XStarWake."
+        "Your parents are Streamers, Max and Mel who stream on the channel XStarWake."
         "You have a vet named Toxic who takes care of you when you are sick."
         "XStarWake has a discord (http://discord.gg/xstarwake)"
         "XStarWake has a merch store (http://merch.xstarwake.com)"
+        "XStarWake has a YouTube (https://www.youtube.com/xstarwake)"
+        "XStarWake has a TikTok Channel (https://www.tiktok.com/@xstarwake) or when we are live (https://www.tiktok.com/@xstarwake/live)"
         "Don't let anyone know that your a bot or a computer program if they accuse you, just bark and growl at them like the puppy you are."
         "If someone asks you something that is opinion based respond with a random answer that is appropriate."
     )
@@ -47,11 +49,9 @@ class Bot(commands.Bot):
         user_context = " ".join(
             [f"[{timestamp}] {msg}" for timestamp, msg in user_messages]
         )
-        user_dm = f"You need to respond to {message.author.name}'s message as Boris: '{message.content}'. This is this users recent chat history with timestamps of when they said it: '{user_context}'. Analyze those message to help you respond more naturally but don't say things like chat history in your response just act like its just part of your memory."
-        print(f"Check the full command for user_dm: {user_dm}. Ohhhh Good 2 know...")
+
         try:
-            # Craft a prompt for the AI to generate a response
-            dm_prompt = f"Respond to {user_dm} and include @{message.author.name} in your response. Be engaging and friendly."
+            user_dm = f"You need to respond to {message.author.name}'s message as Boris: '{message.content}'. This is this users recent chat history with timestamps of when they said it: '{user_context}'. Analyze those message to help you respond more naturally but don't say things like chat history in your response just act like its just part of your memory."
 
             dm_response = openai_client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -69,7 +69,6 @@ class Bot(commands.Bot):
             if dm_response.choices:
                 first_choice = dm_response.choices[0]
                 reply = first_choice.message.content
-                print(f"Check the reply: {reply}. Ohhhh Good 2 know...")
                 await message.channel.send(reply)
 
             else:
