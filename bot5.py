@@ -60,7 +60,7 @@ class Bot(commands.Bot):
                         "role": "system",
                         "content": self.BORIS_PERSONALITY,
                     },
-                    {"role": "user", "content": dm_prompt},
+                    {"role": "user", "content": user_dm},
                 ],
                 max_tokens=200,
                 temperature=0.7,
