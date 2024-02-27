@@ -2,14 +2,9 @@ from openai import OpenAI
 from twitchio.ext import commands
 from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
-# Set your OpenAI API key directly on the openai module
-# Initialize OpenAI with your API key
 openai_client = OpenAI(
     api_key=OPENAI_API_KEY,
-    # headers={"OpenAI-Organization": "XStarWake"}
 )
-
-# RESPONDABLE = False
 
 
 class Bot(commands.Bot):
@@ -31,6 +26,44 @@ class Bot(commands.Bot):
             token=TWITCH_TOKEN, prefix="!", initial_channels=[TWITCH_CHANNEL]
         )
         self.responded_messages = set()  # Set to track messages Boris has responded to
+
+    async def handle_direct_mention(self, message):
+        user_dm = (
+            f"{message.author.name} is talking to boris___bot: '{message.content}'"
+        )
+        try:
+            # Craft a prompt for the AI to generate a response
+            prompt = f"Respond to {user_dm} and include @{user_dm} in your response. Be engaging and friendly."
+
+            dm_response = openai_client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": self.BORIS_PERSONALITY,
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                max_tokens=150,
+                temperature=0.7,
+            )
+
+            # Extract the response content
+            if dm_response.choices:
+                dm_response_content = dm_response.choices[0].message.content
+                await message.channel.send(dm_response_content)
+            else:
+                # Fallback message in case there's no response generated
+                await message.channel.send(
+                    f"Hey @{message.author.name}, how can I assist you today?"
+                )
+
+        except Exception as e:
+            print(f"An error occurred while responding to direct mention: {e}")
+            # Fallback message in case of an error
+            await message.channel.send(
+                "Oops! I ran into an issue. I might be sick might want to let Toxic know I need to see the vet soon. Can you try asking again?"
+            )
 
     async def analyze_sentiment(self, message):
 
@@ -69,24 +102,25 @@ class Bot(commands.Bot):
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
         context = None
         link = None
+        RESPONDABLE = None
 
         if "what" in message_content_lower or "have" in message_content_lower:
 
             # Determine the context and craft the AI prompt
-            if "discord" in message_content_lower:  # and RESPONDABLE is False:
+            if "discord" in message_content_lower and RESPONDABLE is None:
                 context = "an invitation to join our Discord community"
                 link = "http://discord.gg/xstarwake"
-                # RESPONDABLE = True
-            elif "merch" in message_content_lower:  # and RESPONDABLE is False:
+                RESPONDABLE = True
+            elif "merch" in message_content_lower and RESPONDABLE is None:
                 context = "an invitation to check out our merch store"
                 link = "http://merch.xstarwake.com"
-                # RESPONDABLE = True
+                RESPONDABLE = True
             else:
                 # If the message doesn't match any specific context, skip processing
                 return
 
         if (
-            context is not None and link is not None
+            context is not None and link is not None and RESPONDABLE is None
         ):  # Ensure context and link are assigned
             try:
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
@@ -119,12 +153,16 @@ class Bot(commands.Bot):
                     f"Hey, @{message.author.name}, you should check out {link} !"
                 )
 
-        # Directly perform sentiment analysis
-        sentiment = await self.analyze_sentiment(message.content)
+        if "boris___bot" in message.content.lower() and RESPONDABLE is None:
+            # Craft a response when boris___bot is directly mentioned
+            await self.handle_direct_mention(message)
 
-        print(f"How was that message: {sentiment}")
+        if RESPONDABLE is None:
+            # Directly perform sentiment analysis
+            sentiment = await self.analyze_sentiment(message.content)
+            # print(f"How was that message: {sentiment}")
 
-        if "negative" in sentiment or "sad" in sentiment:
+        if ("negative" in sentiment or "sad" in sentiment) and RESPONDABLE is None:
             try:
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
                 prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
