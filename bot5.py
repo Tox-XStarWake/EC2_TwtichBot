@@ -120,7 +120,7 @@ class Bot(commands.Bot):
                 return
 
         if (
-            context is not None and link is not None and RESPONDABLE is None
+            context is not None and link is not None and RESPONDABLE is not None
         ):  # Ensure context and link are assigned
             try:
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
