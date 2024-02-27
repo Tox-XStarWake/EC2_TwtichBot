@@ -1,5 +1,7 @@
 from openai import OpenAI
 from twitchio.ext import commands
+from collections import deque
+from datetime import datetime
 from config_secrets.config import OPENAI_API_KEY, TWITCH_TOKEN, TWITCH_CHANNEL
 
 openai_client = OpenAI(
@@ -29,11 +31,21 @@ class Bot(commands.Bot):
             token=TWITCH_TOKEN, prefix="!", initial_channels=[TWITCH_CHANNEL]
         )
         self.responded_messages = set()  # Set to track messages Boris has responded to
+        self.user_messages = {}  # Stores the last 10 messages per user
+
+    def add_user_message(self, username, message):
+        if username not in self.user_messages:
+            self.user_messages[username] = deque(maxlen=10)
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.user_messages[username].append((timestamp, message))
 
     async def handle_direct_mention(self, message):
-        user_dm = f"{message.author.name}'s message to Boris___Bot: '{message.content}'"
+        user_messages = self.user_messages.get(message.author.name, [])
+        user_context = " ".join(
+            [f"[{timestamp}] {msg}" for timestamp, msg in user_messages]
+        )
+        user_dm = f"{user_context} Respond to {message.author.name}'s message to Boris___Bot: '{message.content}'"
 
-        user_prompt = f"{message.author.name}'s message: '{message.content}'"
         try:
             # Craft a prompt for the AI to generate a response
             dm_prompt = f"Respond to {user_dm} and include @{message.author.name} in your response. Be engaging and friendly."
@@ -101,6 +113,8 @@ class Bot(commands.Bot):
         # Prevent the bot from responding to its own messages or to messages it has already responded to
         if message.echo or message.id in self.responded_messages:
             return
+
+        self.add_user_message(message.author.name, message.content)
 
         message_content_lower = message.content.lower()
         user_prompt = f"{message.author.name}'s message: '{message.content}'"
