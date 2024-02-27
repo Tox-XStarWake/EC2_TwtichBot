@@ -156,43 +156,45 @@ class Bot(commands.Bot):
         if "boris___bot" in message.content.lower() and RESPONDABLE is None:
             # Craft a response when boris___bot is directly mentioned
             await self.handle_direct_mention(message)
+            RESPONDABLE = True
 
         if RESPONDABLE is None:
+            sentiment = None
             # Directly perform sentiment analysis
             sentiment = await self.analyze_sentiment(message.content)
             # print(f"How was that message: {sentiment}")
 
-        if ("negative" in sentiment or "sad" in sentiment) and RESPONDABLE is None:
-            try:
-                # Craft a prompt that instructs the AI to include the sender's name and the Discord link
-                prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
+            if "negative" in sentiment or "sad" in sentiment:
+                try:
+                    # Craft a prompt that instructs the AI to include the sender's name and the Discord link
+                    prompt = f"Respond to '{message.author.name}' message: '{message.content}' and respond with their name with a @ preceding the name and include positive spin to thier message and encourage them to be positive."
 
-                sentiment_completion = openai_client.chat.completions.create(
-                    model="gpt-3.5-turbo",  # Use the openai module directly
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": self.BORIS_PERSONALITY,
-                        },
-                        {"role": "user", "content": prompt},
-                    ],
-                    max_tokens=150,  # Adjust based on your needs
-                    temperature=0.7,  # Adjust for creativity of the response
-                )
-
-                if sentiment_completion.choices:
-                    first_choice = sentiment_completion.choices[0]
-                    reply = first_choice.message.content
-                    await message.channel.send(reply)
-                else:
-                    await message.channel.send(
-                        f"Hey, @{message.author.name}, sorry your having such a RUFF go of it."
+                    sentiment_completion = openai_client.chat.completions.create(
+                        model="gpt-3.5-turbo",  # Use the openai module directly
+                        messages=[
+                            {
+                                "role": "system",
+                                "content": self.BORIS_PERSONALITY,
+                            },
+                            {"role": "user", "content": prompt},
+                        ],
+                        max_tokens=150,  # Adjust based on your needs
+                        temperature=0.7,  # Adjust for creativity of the response
                     )
-            except Exception as e:
-                print(f"An error occurred while generating a response: {e}")
-                await message.channel.send(
-                    f"Hey! @{message.author.name}, Keep your chin up."
-                )
+
+                    if sentiment_completion.choices:
+                        first_choice = sentiment_completion.choices[0]
+                        reply = first_choice.message.content
+                        await message.channel.send(reply)
+                    else:
+                        await message.channel.send(
+                            f"Hey, @{message.author.name}, sorry your having such a RUFF go of it."
+                        )
+                except Exception as e:
+                    print(f"An error occurred while generating a response: {e}")
+                    await message.channel.send(
+                        f"Hey! @{message.author.name}, Keep your chin up."
+                    )
 
 
 if __name__ == "__main__":
