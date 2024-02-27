@@ -31,12 +31,12 @@ class Bot(commands.Bot):
         self.responded_messages = set()  # Set to track messages Boris has responded to
 
     async def handle_direct_mention(self, message):
-        user_dm = (
-            f"{message.author.name} is talking to boris___bot: '{message.content}'"
-        )
+        user_dm = f"{message.author.name}'s message to Boris___Bot: '{message.content}'"
+
+        user_prompt = f"{message.author.name}'s message: '{message.content}'"
         try:
             # Craft a prompt for the AI to generate a response
-            dm_prompt = f"Respond to {user_dm} and include @{user_dm} in your response. Be engaging and friendly."
+            dm_prompt = f"Respond to {user_dm} and include @{message.author.name} in your response. Be engaging and friendly."
 
             dm_response = openai_client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -128,7 +128,7 @@ class Bot(commands.Bot):
         ):  # Ensure context and link are assigned
             try:
                 # Craft a prompt that instructs the AI to include the sender's name and the Discord link
-                prompt = f"Respond to {user_prompt} and include @{user_prompt}, {context} at {link}."
+                prompt = f"Respond to {user_prompt} and include @{message.author.name}, {context} at {link}."
 
                 chat_completion = openai_client.chat.completions.create(
                     model="gpt-3.5-turbo",  # Use the openai module directly
