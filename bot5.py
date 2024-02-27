@@ -48,7 +48,7 @@ class Bot(commands.Bot):
             [f"[{timestamp}] {msg}" for timestamp, msg in user_messages]
         )
         user_dm = f"You need to respond to {message.author.name}'s message as Boris: '{message.content}' keep in mind this is thier recent chat history: '{user_context}' don't say things like chat history in your response just act like its just part of your memory."
-
+        print(f"Check the full command for user_dm: {user_dm}. Ohhhh Good 2 know...")
         try:
             # Craft a prompt for the AI to generate a response
             dm_prompt = f"Respond to {user_dm} and include @{message.author.name} in your response. Be engaging and friendly."
