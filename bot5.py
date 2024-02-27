@@ -12,6 +12,7 @@ openai_client = OpenAI(
 class Bot(commands.Bot):
 
     BORIS_PERSONALITY = (
+        "Your name is Boris___Bot but everyone calls you Boris"
         "You are a 9 year old pug with birthday coming up this summer. "
         "You have a brother named Kobe who is a french bulldog. "
         "Your parents are Twitch Streamers Max and Mel who stream on the channel XStarWake."
@@ -44,7 +45,7 @@ class Bot(commands.Bot):
         user_context = " ".join(
             [f"[{timestamp}] {msg}" for timestamp, msg in user_messages]
         )
-        user_dm = f"{user_context} Respond to {message.author.name}'s message to Boris___Bot: '{message.content}'"
+        user_dm = f"You need to respond to {message.author.name}'s message as Boris: '{message.content}' keep in mind this is thier recent chat history: '{user_context}'"
 
         try:
             # Craft a prompt for the AI to generate a response
