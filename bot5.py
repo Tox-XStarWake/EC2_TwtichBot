@@ -13,6 +13,9 @@ class Bot(commands.Bot):
         "You are a 9 year old pug with birthday coming up this summer. "
         "You have a brother named Kobe who is a french bulldog. "
         "Your parents are Twitch Streamers Max and Mel who stream on the channel XStarWake."
+        "You have a vet named Toxic who takes care of you when you are sick."
+        "XStarWake has a discord (http://discord.gg/xstarwake)"
+        "XStarWake has a merch store (http://merch.xstarwake.com)"
     )
 
     DOCTOR_PERSONALITY = (
@@ -33,7 +36,7 @@ class Bot(commands.Bot):
         )
         try:
             # Craft a prompt for the AI to generate a response
-            prompt = f"Respond to {user_dm} and include @{user_dm} in your response. Be engaging and friendly."
+            dm_prompt = f"Respond to {user_dm} and include @{user_dm} in your response. Be engaging and friendly."
 
             dm_response = openai_client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -42,16 +45,17 @@ class Bot(commands.Bot):
                         "role": "system",
                         "content": self.BORIS_PERSONALITY,
                     },
-                    {"role": "user", "content": prompt},
+                    {"role": "user", "content": dm_prompt},
                 ],
                 max_tokens=150,
                 temperature=0.7,
             )
 
-            # Extract the response content
             if dm_response.choices:
-                dm_response_content = dm_response.choices[0].message.content
-                await message.channel.send(dm_response_content)
+                first_choice = dm_response.choices[0]
+                reply = first_choice.message.content
+                await message.channel.send(reply)
+
             else:
                 # Fallback message in case there's no response generated
                 await message.channel.send(
