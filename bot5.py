@@ -137,9 +137,9 @@ class Bot(commands.Bot):
                 context = "an invitation to check out our merch store"
                 link = "http://merch.xstarwake.com"
                 RESPONDABLE = True
-            else:
-                # If the message doesn't match any specific context, skip processing
-                return
+            # else:
+            #     # If the message doesn't match any specific context, skip processing
+            #     return
 
         if (
             context is not None and link is not None and RESPONDABLE is not None
