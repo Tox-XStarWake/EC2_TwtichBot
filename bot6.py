@@ -142,6 +142,15 @@ class Bot(commands.Bot):
         if message.echo or message.id in self.responded_messages:
             return
 
+        if message.content.startswith("!"):
+            # If it does, just return and do not process the message further
+            return
+
+        # Split the message into words and check if there are less than 3 words
+        if len(message.content.split()) < 4:
+            # If there are less than 4 words, return and do not process the message further
+            return
+
         self.add_user_message(message.author.name, message.content)
 
         message_content_lower = message.content.lower()
