@@ -1,3 +1,5 @@
+# Bot Ver 6
+
 import asyncio
 from openai import OpenAI
 from twitchio.ext import commands
